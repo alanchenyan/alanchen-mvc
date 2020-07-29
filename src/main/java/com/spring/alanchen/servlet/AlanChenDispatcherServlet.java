@@ -14,9 +14,16 @@ import java.io.IOException;
  */
 public class AlanChenDispatcherServlet extends HttpServlet {
 
-    @Override
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+
+	@Override
     public void init(ServletConfig config){
 
+		System.out.println("do init.........");
     }
 
     @Override
