@@ -45,13 +45,13 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		// 根据扫描的全类名进行实例化
 		doInstance();
 		
-		// 把Service注入到Controller
+		// 处理依赖注入
 		doIoc();
     }
 
 
 	/**
-	 * 把Service注入到Controller
+	 * 处理依赖注入
 	 */
 	private void doIoc() {
 		if(beans.entrySet().size()==0) {
