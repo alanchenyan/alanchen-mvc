@@ -12,7 +12,7 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>application.properties</param-value>
 		</init-param>
-		<!-- 启动时执行init方法 -->
+		<!-- 表示容器在应用启动时就加载并初始化这个servlet，实例化并调用其init()方法 -->
 		<load-on-startup>0</load-on-startup>
 	</servlet>
 	
