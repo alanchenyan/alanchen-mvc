@@ -40,7 +40,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 
 	private Map<String, Object> beans = new HashMap<String, Object>();
 
-	private Map<String, ControllerMethod> handleMap = new HashMap<String, ControllerMethod>();
+	private Map<String, ControllerMethod> handlerMapping = new HashMap<String, ControllerMethod>();
 
 	@Override
 	public void init(ServletConfig config) {
@@ -73,7 +73,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		String context = req.getContextPath();
 		String path = uri.replace(context, "");
 
-		ControllerMethod controllerMethod = handleMap.get(path);
+		ControllerMethod controllerMethod = handlerMapping.get(path);
 		Method method =controllerMethod.getMethod();
 		Object controller =controllerMethod.getController();
 
@@ -144,7 +144,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 							controllerMethod.setController(instance);
 							controllerMethod.setMethod(method);
 							
-							handleMap.put(classPath + methodPath, controllerMethod);
+							handlerMapping.put(classPath + methodPath, controllerMethod);
 						} else {
 							continue;
 						}
