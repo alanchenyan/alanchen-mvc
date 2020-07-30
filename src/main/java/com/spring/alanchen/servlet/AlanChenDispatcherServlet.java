@@ -113,6 +113,13 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * 获取请求参数值
+	 * @param req
+	 * @param resp
+	 * @param method
+	 * @return
+	 */
 	private Object[] hand(HttpServletRequest req, HttpServletResponse resp, Method method) {
 		Class<?>[] paramClazzs = method.getParameterTypes();
 		Object[] args = new Object[paramClazzs.length];
@@ -281,6 +288,11 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		}
 	}
 	
+	/**
+	 * 类名首字母转小写
+	 * @param str
+	 * @return
+	 */
 	private String lowerFirstCase(String str) {
 		char[] chars = str.toCharArray();
 		chars[0]+=32;
