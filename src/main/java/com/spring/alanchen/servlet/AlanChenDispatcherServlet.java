@@ -206,12 +206,20 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 						AlanChenAutowired autowired = field.getAnnotation(AlanChenAutowired.class);
 						field.setAccessible(true);
 
+						// 1、优先通过用户配置的value去取对象
 						String beanName = autowired.value();
 						if(beanName.isEmpty()) {
-							beanName = field.getType().getName();
+							// 2、通过类名首字母小写取对象
+							beanName = field.getName();
 						}
 						
 						Object obj = beans.get(beanName);
+						if(obj == null) {
+							// 3、通过接口类型取对象，注入接口的实现类
+							beanName = field.getType().getName();
+							obj = beans.get(beanName);
+						}
+						
 
 						field.set(instance, obj);
 					}
@@ -254,11 +262,13 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 						// 2、如果没有配置value值，则用类名首字母小写的类名做为key
 						beanName = lowerFirstCase(clazz.getSimpleName());
 					}
+					System.out.println("beanName="+beanName);
 					beans.put(beanName, instace);
 					
 					// 3、用实现接口的类型名称做为key，注入接口的实现类
 					Class<?>[] intefaces = clazz.getInterfaces();
 					for(Class inteface : intefaces) {
+						System.out.println("inteface="+inteface.getName());
 						beans.put(inteface.getName(), instace);
 					}
 					
