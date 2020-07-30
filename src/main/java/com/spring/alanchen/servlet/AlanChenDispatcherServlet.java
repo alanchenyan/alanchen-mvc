@@ -24,7 +24,6 @@ import com.spring.alanchen.annaotation.AlanChenController;
 import com.spring.alanchen.annaotation.AlanChenRequestMapping;
 import com.spring.alanchen.annaotation.AlanChenRequestParam;
 import com.spring.alanchen.annaotation.AlanChenService;
-import com.spring.alanchen.controller.TestController;
 
 /**
  * @author Alan Chen
@@ -41,7 +40,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 
 	private Map<String, Object> beans = new HashMap<String, Object>();
 
-	private Map<String, Method> handleMap = new HashMap<String, Method>();
+	private Map<String, ControllerMethod> handleMap = new HashMap<String, ControllerMethod>();
 
 	@Override
 	public void init(ServletConfig config) {
@@ -74,10 +73,9 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		String context = req.getContextPath();
 		String path = uri.replace(context, "");
 
-		Method method = handleMap.get(path);
-
-		// TODO 这个地方要优化
-		TestController controller = (TestController) beans.get("/alanchen");
+		ControllerMethod controllerMethod = handleMap.get(path);
+		Method method =controllerMethod.getMethod();
+		Object controller =controllerMethod.getController();
 
 		Object arg[] = hand(req, resp, method);
 		try {
@@ -141,7 +139,12 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 						if (method.isAnnotationPresent(AlanChenRequestMapping.class)) {
 							AlanChenRequestMapping methodMapping = method.getAnnotation(AlanChenRequestMapping.class);
 							String methodPath = methodMapping.value();
-							handleMap.put(classPath + methodPath, method);
+							
+							ControllerMethod controllerMethod = new ControllerMethod();
+							controllerMethod.setController(instance);
+							controllerMethod.setMethod(method);
+							
+							handleMap.put(classPath + methodPath, controllerMethod);
 						} else {
 							continue;
 						}
