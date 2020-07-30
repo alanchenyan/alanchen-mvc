@@ -40,7 +40,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 
 	private Map<String, Object> beans = new HashMap<String, Object>();
 
-	private Map<String, ControllerMethod> handlerMapping = new HashMap<String, ControllerMethod>();
+	private Map<String, Handler> handlerMapping = new HashMap<String, Handler>();
 
 	@Override
 	public void init(ServletConfig config) {
@@ -73,9 +73,9 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		String context = req.getContextPath();
 		String path = uri.replace(context, "");
 
-		ControllerMethod controllerMethod = handlerMapping.get(path);
-		Method method =controllerMethod.getMethod();
-		Object controller =controllerMethod.getController();
+		Handler handler = handlerMapping.get(path);
+		Method method =handler.getMethod();
+		Object controller =handler.getController();
 
 		Object arg[] = hand(req, resp, method);
 		try {
@@ -140,11 +140,11 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 							AlanChenRequestMapping methodMapping = method.getAnnotation(AlanChenRequestMapping.class);
 							String methodPath = methodMapping.value();
 							
-							ControllerMethod controllerMethod = new ControllerMethod();
-							controllerMethod.setController(instance);
-							controllerMethod.setMethod(method);
+							Handler handler = new Handler();
+							handler.setController(instance);
+							handler.setMethod(method);
 							
-							handlerMapping.put(classPath + methodPath, controllerMethod);
+							handlerMapping.put(classPath + methodPath, handler);
 						} else {
 							continue;
 						}

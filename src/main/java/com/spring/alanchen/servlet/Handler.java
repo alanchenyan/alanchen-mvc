@@ -2,7 +2,7 @@ package com.spring.alanchen.servlet;
 
 import java.lang.reflect.Method;
 
-public class ControllerMethod {
+public class Handler {
 
 	private Object controller;
 	
