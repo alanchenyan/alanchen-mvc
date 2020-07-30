@@ -8,7 +8,7 @@ import com.spring.alanchen.annaotation.service.IAlanChenSerivce;
  * @description
  * @date 2020-07-28
  */
-@AlanChenService("alanChenSerivceImpl")
+@AlanChenService
 public class AlanChenSerivceImpl implements IAlanChenSerivce {
 
     public String query(String name, String age) {

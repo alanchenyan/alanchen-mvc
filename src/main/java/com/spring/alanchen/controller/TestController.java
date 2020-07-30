@@ -21,7 +21,7 @@ import com.spring.alanchen.annaotation.service.IAlanChenSerivce;
 @AlanChenRequestMapping("/alanchen")
 public class TestController {
 
-    @AlanChenAutowired("alanChenSerivceImpl")
+    @AlanChenAutowired
     IAlanChenSerivce alanChenSerivceImpl;
 
     @AlanChenRequestMapping("/query")

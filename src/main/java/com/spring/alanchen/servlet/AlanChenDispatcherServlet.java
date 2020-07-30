@@ -203,11 +203,15 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 
 				for (Field field : fileds) {
 					if (field.isAnnotationPresent(AlanChenAutowired.class)) {
-						AlanChenAutowired auto = field.getAnnotation(AlanChenAutowired.class);
+						AlanChenAutowired autowired = field.getAnnotation(AlanChenAutowired.class);
 						field.setAccessible(true);
 
-						String key = auto.value();
-						Object obj = beans.get(key);
+						String beanName = autowired.value();
+						if(beanName.isEmpty()) {
+							beanName = field.getType().getName();
+						}
+						
+						Object obj = beans.get(beanName);
 
 						field.set(instance, obj);
 					}
@@ -237,15 +241,30 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 				if (clazz.isAnnotationPresent(AlanChenController.class)) {
 					// 初始化Controller类
 					Object instace = clazz.newInstance();
-					AlanChenRequestMapping requestMapping = clazz.getAnnotation(AlanChenRequestMapping.class);
-					String requestValue = requestMapping.value();
-					beans.put(requestValue, instace);
+					//AlanChenRequestMapping requestMapping = clazz.getAnnotation(AlanChenRequestMapping.class);
+					//String requestValue = requestMapping.value();
+					
+					String beanName = lowerFirstCase(clazz.getSimpleName());
+					beans.put(beanName, instace);
 				} else if (clazz.isAnnotationPresent(AlanChenService.class)) {
-					// 初始化Controller类
+					// 初始化Service类
 					Object instace = clazz.newInstance();
 					AlanChenService service = clazz.getAnnotation(AlanChenService.class);
-					String serviceValue = service.value();
-					beans.put(serviceValue, instace);
+					
+					// 1、优先使用用户配置的value值做为key
+					String beanName = service.value();
+					if(beanName.isEmpty()) {
+						// 2、如果没有配置value值，则用类名首字母小写的类名做为key
+						beanName = lowerFirstCase(clazz.getSimpleName());
+					}
+					beans.put(beanName, instace);
+					
+					// 3、用实现接口的类型名称做为key，注入接口的实现类
+					Class<?>[] intefaces = clazz.getInterfaces();
+					for(Class inteface : intefaces) {
+						beans.put(inteface.getName(), instace);
+					}
+					
 				} else {
 					continue;
 				}
@@ -253,6 +272,12 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private String lowerFirstCase(String str) {
+		char[] chars = str.toCharArray();
+		chars[0]+=32;
+		return String.valueOf(chars);
 	}
 
 	/**
