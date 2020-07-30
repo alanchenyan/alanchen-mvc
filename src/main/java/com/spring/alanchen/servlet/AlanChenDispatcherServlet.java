@@ -2,6 +2,7 @@ package com.spring.alanchen.servlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -33,8 +35,8 @@ import com.spring.alanchen.annaotation.AlanChenService;
 public class AlanChenDispatcherServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	private final String BASE_PATH = "com.spring.alanchen";
+	
+	private Properties contextConfig = new Properties();
 
 	private List<String> classNames = new ArrayList<String>();
 
@@ -44,18 +46,44 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 
 	@Override
 	public void init(ServletConfig config) {
+		
+		// 1、加载配置文件
+		doLoadConfig(config);
 
-		// 扫描所有的class文件
-		scanPackage(BASE_PATH);
+		// 2、扫描所有的class文件
+		doScanPackage(contextConfig.getProperty("scanPackage"));
 
-		// 根据扫描的全类名进行实例化
+		// 3、根据扫描的全类名进行实例化
 		doInstance();
 
-		// 处理依赖注入
+		// 4、处理依赖注入
 		doIoc();
 
-		// 映射访问路径和方法的关系
-		buildUrlMapping();
+		// 5、映射访问路径和方法的关系
+		initHandlerMapping();
+	}
+
+	/**
+	 * 加载配置文件
+	 * @param config
+	 */
+	private void doLoadConfig(ServletConfig config) {
+		String contextConfigLocation = config.getInitParameter("contextConfigLocation");
+		InputStream inStream = this.getClass().getClassLoader().getResourceAsStream(contextConfigLocation);
+		try {
+			contextConfig.load(inStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			if(inStream!=null) {
+				try {
+					inStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 
 	@Override
@@ -119,7 +147,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 	/**
 	 * 映射访问路径和方法的关系
 	 */
-	private void buildUrlMapping() {
+	private void initHandlerMapping() {
 		if (beans.entrySet().size() == 0) {
 			System.out.println("实例化的类数量为0");
 			return;
@@ -232,7 +260,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 	 * 
 	 * @param basePackage
 	 */
-	private void scanPackage(String basePackage) {
+	private void doScanPackage(String basePackage) {
 		URL url = this.getClass().getClassLoader().getResource("/" + basePackage.replaceAll("\\.", "/"));
 		String fileStr = url.getFile();
 
@@ -241,7 +269,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		for (String path : filesStr) {
 			File filePath = new File(fileStr + path);
 			if (filePath.isDirectory()) {
-				scanPackage(basePackage + "." + path);
+				doScanPackage(basePackage + "." + path);
 			} else {
 				classNames.add(basePackage + "." + filePath.getName());
 			}

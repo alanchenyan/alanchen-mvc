@@ -8,6 +8,10 @@
 	<servlet>
 		<servlet-name>AlanChenDispatcherServlet</servlet-name>
 		<servlet-class>com.spring.alanchen.servlet.AlanChenDispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>application.properties</param-value>
+		</init-param>
 		<!-- 启动时执行init方法 -->
 		<load-on-startup>0</load-on-startup>
 	</servlet>
