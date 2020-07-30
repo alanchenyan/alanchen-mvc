@@ -241,9 +241,6 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 				if (clazz.isAnnotationPresent(AlanChenController.class)) {
 					// 初始化Controller类
 					Object instace = clazz.newInstance();
-					//AlanChenRequestMapping requestMapping = clazz.getAnnotation(AlanChenRequestMapping.class);
-					//String requestValue = requestMapping.value();
-					
 					String beanName = lowerFirstCase(clazz.getSimpleName());
 					beans.put(beanName, instace);
 				} else if (clazz.isAnnotationPresent(AlanChenService.class)) {
