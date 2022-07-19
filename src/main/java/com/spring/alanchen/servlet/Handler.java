@@ -2,6 +2,11 @@ package com.spring.alanchen.servlet;
 
 import java.lang.reflect.Method;
 
+/**
+ * @author Alan Chen
+ * @description
+ * @date 2020-07-28
+ */
 public class Handler {
 
 	private Object controller;
@@ -23,6 +28,4 @@ public class Handler {
 	public void setMethod(Method method) {
 		this.method = method;
 	}
-	
-	
 }
