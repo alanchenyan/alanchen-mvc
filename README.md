@@ -15,25 +15,25 @@
 #### 四、init核心代码
 ```java
 @Override
-	public void init(ServletConfig config) {
+public void init(ServletConfig config) {
 
-		// 1、加载配置文件
-		doLoadConfig(config);
+	// 1、加载配置文件
+	doLoadConfig(config);
 
-		// 2、扫描所有的class文件
-		doScanPackage(contextConfig.getProperty("scanPackage"));
+	// 2、扫描所有的class文件
+	doScanPackage(contextConfig.getProperty("scanPackage"));
 
-		// 3、初始化IOC容器，将扫描到的类实例化，保存到IOC容器中(IOC部分)
-		doInstance();
+	// 3、初始化IOC容器，将扫描到的类实例化，保存到IOC容器中(IOC部分)
+	doInstance();
 
-		// TODO 在DI之前完成AOP(新生成的代理对象)
+	// TODO 在DI之前完成AOP(新生成的代理对象)
 
-		// 4、完成依赖注入(DI部分)
-		doAutowired();
+	// 4、完成依赖注入(DI部分)
+	doAutowired();
 
-		// 5、映射访问路径和方法的关系(MVC部分)
-		initHandlerMapping();
-	}
+	// 5、映射访问路径和方法的关系(MVC部分)
+	initHandlerMapping();
+}
 ```
 
 #### 五、pom.xml
