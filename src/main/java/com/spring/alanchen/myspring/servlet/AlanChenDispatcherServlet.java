@@ -289,8 +289,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 
 		try {
 			for (String className : classNames) {
-				String cn = className.replace(".class", "");
-				Class<?> clazz = Class.forName(cn);
+				Class<?> clazz = Class.forName(className);
 
 				if (clazz.isAnnotationPresent(AlanChenController.class)) {
 					// 初始化Controller类
@@ -346,7 +345,10 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 	 * @param basePackage
 	 */
 	private void doScanPackage(String basePackage) {
+		//硬盘上的目录是用斜杠/分割，因此要将.替换成斜杠/
 		URL url = this.getClass().getClassLoader().getResource("/" + basePackage.replaceAll("\\.", "/"));
+		
+		//fileStr=D://alanchen-mvc/WEB-INF/classes/com/spring/alanchen/
 		String fileStr = url.getFile();
 
 		File file = new File(fileStr);
@@ -357,7 +359,9 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 				// 递归直到找到文件为止
 				doScanPackage(basePackage + "." + path);
 			} else {
-				classNames.add(basePackage + "." + filePath.getName());
+				if(filePath.getName().endsWith(".class")) {
+					classNames.add(basePackage + "." + filePath.getName().replace(".class", ""));
+				}
 			}
 		}
 	}
