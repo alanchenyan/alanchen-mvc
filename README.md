@@ -7,10 +7,10 @@
 该项目需要部署在tomcat等容器中运行。
 
 #### 三、SpringMVC(alanchen-mvc)加载顺序 
-1、tomcat 
-2、web.xml 
-3、DispatchServlet(AlanChenDispatcherServlet)
-4、Servlet.init()初始化方法
+- 1、tomcat 
+- 2、web.xml 
+- 3、DispatchServlet(AlanChenDispatcherServlet)
+- 4、Servlet.init()初始化方法
 
 #### 四、init核心代码
 ```java
