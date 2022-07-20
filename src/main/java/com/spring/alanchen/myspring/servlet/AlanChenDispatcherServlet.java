@@ -1,4 +1,4 @@
-package com.spring.alanchen.servlet;
+package com.spring.alanchen.myspring.servlet;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,11 +21,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.spring.alanchen.annaotation.AlanChenAutowired;
-import com.spring.alanchen.annaotation.AlanChenController;
-import com.spring.alanchen.annaotation.AlanChenRequestMapping;
-import com.spring.alanchen.annaotation.AlanChenRequestParam;
-import com.spring.alanchen.annaotation.AlanChenService;
+import com.spring.alanchen.myspring.annaotation.AlanChenAutowired;
+import com.spring.alanchen.myspring.annaotation.AlanChenController;
+import com.spring.alanchen.myspring.annaotation.AlanChenRequestMapping;
+import com.spring.alanchen.myspring.annaotation.AlanChenRequestParam;
+import com.spring.alanchen.myspring.annaotation.AlanChenService;
 
 /**
  * @author Alan Chen
@@ -308,7 +308,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 						// 2、如果没有配置value值，则用类名首字母小写的类名做为key
 						beanName = lowerFirstCase(clazz.getSimpleName());
 					}
-					System.out.println("beanName2=" + beanName);
+					System.out.println("beanName=" + beanName);
 					beans.put(beanName, instace);
 
 					// 3、用实现接口的类型名称做为key，注入接口的实现类

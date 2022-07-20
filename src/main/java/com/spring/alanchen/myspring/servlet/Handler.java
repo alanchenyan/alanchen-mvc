@@ -1,4 +1,4 @@
-package com.spring.alanchen.servlet;
+package com.spring.alanchen.myspring.servlet;
 
 import java.lang.reflect.Method;
 

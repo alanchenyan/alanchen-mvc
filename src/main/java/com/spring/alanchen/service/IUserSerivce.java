@@ -1,11 +1,11 @@
-package com.spring.alanchen.annaotation.service;
+package com.spring.alanchen.service;
 
 /**
  * @author Alan Chen
  * @description
  * @date 2020-07-28
  */
-public interface IAlanChenSerivce {
+public interface IUserSerivce {
 
     String query(String name,String age);
 }
