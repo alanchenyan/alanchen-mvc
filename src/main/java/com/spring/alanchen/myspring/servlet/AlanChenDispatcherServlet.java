@@ -31,9 +31,9 @@ import com.spring.alanchen.myspring.annaotation.AlanChenService;
  * @author Alan Chen
  * @description
  * 
- * 				SpringMVC加载顺序 1、tomcat 2、web.xml 3、DispatchServlet
+ * 	SpringMVC加载顺序 1、tomcat 2、web.xml 3、DispatchServlet
  * 
- *              MVC作为入口 启动IOC容器 完成DI
+ *  MVC作为入口 启动IOC容器 完成DI
  * 
  * @date 2020-07-28
  */
