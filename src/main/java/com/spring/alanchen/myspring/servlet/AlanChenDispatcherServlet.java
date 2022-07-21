@@ -206,25 +206,35 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 			for (Map.Entry<String, Object> entry : beans.entrySet()) {
 				Object instance = entry.getValue();
 				Class<?> clazz = instance.getClass();
-				if (clazz.isAnnotationPresent(AlanChenController.class)) {
-					AlanChenRequestMapping mapping = clazz.getAnnotation(AlanChenRequestMapping.class);
-					String classPath = mapping.value();
-
-					Method[] methods = clazz.getMethods();
-					for (Method method : methods) {
-						if (method.isAnnotationPresent(AlanChenRequestMapping.class)) {
-							AlanChenRequestMapping methodMapping = method.getAnnotation(AlanChenRequestMapping.class);
-							String methodPath = methodMapping.value();
-
-							Handler handler = new Handler();
-							handler.setController(instance);
-							handler.setMethod(method);
-
-							handlerMapping.put(classPath + methodPath, handler);
-						} else {
-							continue;
-						}
+				
+				//用取反的方式减少if嵌套层数
+				if (!clazz.isAnnotationPresent(AlanChenController.class)) {
+					continue;
+				}
+				
+				AlanChenRequestMapping mapping = clazz.getAnnotation(AlanChenRequestMapping.class);
+				String classPath = mapping.value();
+		
+				/**
+				 * clazz.getDeclaredMethods() 是获取所有方法
+				 * clazz.getMethods() 只获取public修饰的方法
+				 * Spring也只处理public的方法
+				 */
+				Method[] methods = clazz.getMethods();
+				
+				for (Method method : methods) {
+					if (!method.isAnnotationPresent(AlanChenRequestMapping.class)) {
+						continue;
 					}
+					
+					AlanChenRequestMapping methodMapping = method.getAnnotation(AlanChenRequestMapping.class);
+					String methodPath = methodMapping.value();
+
+					Handler handler = new Handler();
+					handler.setController(instance);
+					handler.setMethod(method);
+
+					handlerMapping.put(classPath + methodPath, handler);
 				}
 			}
 		} catch (Exception e) {
@@ -242,35 +252,38 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		}
 
 		try {
-
 			for (Map.Entry<String, Object> entry : beans.entrySet()) {
 				Object instance = entry.getValue();
 				Class<?> clazz = instance.getClass();
+				
+				//获取所有属性，包括private修饰的属性
 				Field[] fileds = clazz.getDeclaredFields();
 
 				for (Field field : fileds) {
-					if (field.isAnnotationPresent(AlanChenAutowired.class)) {
-						AlanChenAutowired autowired = field.getAnnotation(AlanChenAutowired.class);
-
-						// 即使属性是private，也强制设置为可访问
-						field.setAccessible(true);
-
-						// 1、优先通过用户配置的value去取对象
-						String beanName = autowired.value();
-						if (beanName.isEmpty()) {
-							// 2、通过类名首字母小写取对象
-							beanName = field.getName();
-						}
-
-						Object obj = beans.get(beanName);
-						// 如果通过名称无法获取到对象，则通过类型获取
-						if (obj == null) {
-							// 3、通过接口类型取对象，注入接口的实现类
-							beanName = field.getType().getName();
-							obj = beans.get(beanName);
-						}
-						field.set(instance, obj);
+					if (!field.isAnnotationPresent(AlanChenAutowired.class)) {
+						continue;
 					}
+					
+					AlanChenAutowired autowired = field.getAnnotation(AlanChenAutowired.class);
+
+					// 即使属性是private，也强制设置为可访问
+					field.setAccessible(true);
+
+					// 1、优先通过用户配置的value去取对象
+					String beanName = autowired.value();
+					if (beanName.isEmpty()) {
+						// 2、通过类名首字母小写取对象
+						beanName = field.getName();
+					}
+
+					Object obj = beans.get(beanName);
+					// 如果通过名称无法获取到对象，则通过类型获取
+					if (obj == null) {
+						// 3、通过接口类型取对象，注入接口的实现类
+						beanName = field.getType().getName();
+						obj = beans.get(beanName);
+					}
+					field.set(instance, obj);
 				}
 			}
 		} catch (Exception e) {
@@ -316,7 +329,6 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 						System.out.println("inteface=" + inteface.getName());
 						beans.put(inteface.getName(), instace);
 					}
-
 				} else {
 					continue;
 				}
@@ -333,10 +345,21 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 	 * @return
 	 */
 	private String lowerFirstCase(String str) {
-		// TODO 首字母是大写才转小写，否则不需要处理
+		if(str == null || str.isEmpty()) {
+			return str;
+		}
+		
+		/**
+		 * 首字母是大写才转小写，否则不需要处理
+		 * 大写字母范围：65-90
+		 */
 		char[] chars = str.toCharArray();
-		chars[0] += 32;
-		return String.valueOf(chars);
+		char first = chars[0];
+		if(first>=65 & first <=90) {
+			chars[0] += 32;
+			return String.valueOf(chars);
+		}
+		return str;
 	}
 
 	/**
