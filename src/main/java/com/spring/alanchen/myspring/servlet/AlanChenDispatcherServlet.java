@@ -213,7 +213,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 				}
 				
 				AlanChenRequestMapping mapping = clazz.getAnnotation(AlanChenRequestMapping.class);
-				String classPath = mapping.value();
+				String classPath = "/"+mapping.value();
 		
 				/**
 				 * clazz.getDeclaredMethods() 是获取所有方法
@@ -228,13 +228,17 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 					}
 					
 					AlanChenRequestMapping methodMapping = method.getAnnotation(AlanChenRequestMapping.class);
-					String methodPath = methodMapping.value();
+					String methodPath = "/"+methodMapping.value();
 
 					Handler handler = new Handler();
 					handler.setController(instance);
 					handler.setMethod(method);
-
-					handlerMapping.put(classPath + methodPath, handler);
+					
+					//将多个重复的斜杠替换成一个斜杠
+					String url = (classPath + methodPath).replaceAll("/+", "/");
+					handlerMapping.put(url, handler);
+					
+					System.out.println("url="+url+";method="+method.getName());
 				}
 			}
 		} catch (Exception e) {

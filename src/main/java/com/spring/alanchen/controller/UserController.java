@@ -22,7 +22,7 @@ public class UserController {
 	@AlanChenAutowired
 	IUserSerivce userSerivceImpl;
 
-	@AlanChenRequestMapping("/query")
+	@AlanChenRequestMapping("query")
 	public String query(HttpServletRequest request, HttpServletResponse response,
 			@AlanChenRequestParam("name") String name, @AlanChenRequestParam("age") String age) {
 		
