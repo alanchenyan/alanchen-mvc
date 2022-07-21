@@ -355,7 +355,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 		 */
 		char[] chars = str.toCharArray();
 		char first = chars[0];
-		if(first>=65 & first <=90) {
+		if(first>=65 && first <=90) {
 			chars[0] += 32;
 			return String.valueOf(chars);
 		}
