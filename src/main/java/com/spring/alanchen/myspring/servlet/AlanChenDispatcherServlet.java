@@ -112,19 +112,30 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 	 * @param resp
 	 */
 	private void doDispatch(HttpServletRequest req, HttpServletResponse resp) {
+		// uri=/alanchen-mvc/user/query
 		String uri = req.getRequestURI();
+		
+		//context=/alanchen-mvc
 		String context = req.getContextPath();
-		String path = uri.replace(context, "");
+		
+		//path=/user/query
+		String path = uri.replaceAll(context, "").replaceAll("/+", "/");
+		
+		if(!handlerMapping.containsKey(path)) {
+			writeResult(resp,"404 NOT FOUND");
+			return;
+		}
 
 		Handler handler = handlerMapping.get(path);
 		Method method = handler.getMethod();
 		Object controller = handler.getController();
 
-		Object arg[] = hand(req, resp, method);
+		Object arg[] = handArg(req, resp, method);
 		Object result=null;
 		try {
 			result = method.invoke(controller, arg);
 		}catch(Exception e) {
+			writeResult(resp,"500 服务器异常");
 			e.printStackTrace();
 		}
 		
@@ -163,7 +174,7 @@ public class AlanChenDispatcherServlet extends HttpServlet {
 	 * @param method
 	 * @return
 	 */
-	private Object[] hand(HttpServletRequest req, HttpServletResponse resp, Method method) {
+	private Object[] handArg(HttpServletRequest req, HttpServletResponse resp, Method method) {
 		Class<?>[] paramClazzs = method.getParameterTypes();
 		Object[] args = new Object[paramClazzs.length];
 
